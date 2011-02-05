@@ -5,13 +5,15 @@
 class Comment < ActiveRecord::Base
   require File.join(Rails.root, 'lib/diaspora/web_socket')
   require File.join(Rails.root, 'lib/youtube_titles')
+  require File.join(Rails.root, 'lib/has_person_proxy')
   include YoutubeTitles
   include ROXML
   include Diaspora::Webhooks
   include Encryptable
   include Diaspora::Socketable
   include Diaspora::Guid
-
+  include HasPersonProxy
+  
   xml_attr :text
   xml_attr :diaspora_handle
   xml_attr :post_guid
@@ -19,7 +21,7 @@ class Comment < ActiveRecord::Base
   xml_attr :post_creator_signature
 
   belongs_to :post
-  belongs_to :person
+  always_belongs_to_person
 
   validates_presence_of :text, :post
   validates_length_of :text, :maximum => 500
