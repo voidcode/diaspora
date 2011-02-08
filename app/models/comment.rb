@@ -21,8 +21,16 @@ class Comment < ActiveRecord::Base
   xml_attr :post_creator_signature
 
   belongs_to :post
-  always_belongs_to_person
+  belongs_to :person
 
+  alias_method_chain :person, :proxy
+
+  def person_with_proxy
+    puts "lalal"
+    self.person_without_proxy || DeletedPersonProxy.new(self)
+  end 
+  
+  
   validates_presence_of :text, :post
   validates_length_of :text, :maximum => 500
 
