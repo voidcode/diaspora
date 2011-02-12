@@ -3,11 +3,11 @@ require 'spec_helper'
 require File.join(Rails.root, 'lib', 'has_person_proxy')
 
 describe HasPersonProxy do
-  before do
-    @person = HasPersonProxy::DeletedPersonProxy.new
-  end
-
   describe 'setup' do
+    before do
+      @person = HasPersonProxy::DeletedPersonProxy.new
+    end
+
     it 'should respond_to name ' do
       @person.name.should == 'Diaspora User'
     end
@@ -23,13 +23,12 @@ describe HasPersonProxy do
     it 'should log objects with nil people' do
       Rails.logger.should_receive(:info)
       HasPersonProxy::DeletedPersonProxy.new(Factory(:status_message))
-
     end
   end
 
   describe 'including it into objects' do 
     before do
-      class HasPerson< Post
+      class HasPerson < Statistic
         include HasPersonProxy
         always_has_one_person
 
@@ -38,7 +37,7 @@ describe HasPersonProxy do
         end
       end
 
-      class NilPerson < Post
+      class NilPerson < Statistic
         include HasPersonProxy
         always_has_one_person
 
@@ -50,18 +49,17 @@ describe HasPersonProxy do
           34232 #this doesnt exsist
         end
       end
-
-      @has_person = HasPerson.new
-      @has_person.person = Factory(:person)
-      @nil_person = NilPerson.new
     end
 
     it 'returns a person object if one exsists' do
-      @has_person.person.should be_a Person
+      has_person = HasPerson.new
+      has_person.person = Factory(:person)
+      has_person.person.should be_a Person
     end
 
     it 'returns a person object if one exsists' do
-      @nil_person.person.should be_a HasPersonProxy::DeletedPersonProxy
+      nil_person = NilPerson.new
+      nil_person.person.should be_a HasPersonProxy::DeletedPersonProxy
     end
   end
 end

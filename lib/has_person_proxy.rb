@@ -1,4 +1,8 @@
 module HasPersonProxy
+  def self.included(base)
+    base.extend(ClassMethods)
+  end
+
   module ClassMethods
     def always_has_one_person
       self.instance_eval do
@@ -31,7 +35,6 @@ module HasPersonProxy
       @empty = ''
     end
 
-
     def name
       'Diaspora User'
     end
@@ -42,12 +45,6 @@ module HasPersonProxy
 
     def method_missing(*args)
       @empty
-    end
-  end
-
-  def self.included(base)
-    base.class_eval do
-      base.extend ClassMethods
     end
   end
 end

@@ -9,12 +9,12 @@ describe AspectsController do
   render_views
 
   before do
-    @user  = alice
+    @user = alice
     @user2 = bob
 
-    @aspect0  = @user.aspects.first
-    @aspect1  = @user.aspects.create(:name => "another aspect")
-    @aspect2  = @user2.aspects.first
+    @aspect0 = @user.aspects.first
+    @aspect1 = @user.aspects.create(:name => "another aspect")
+    @aspect2 = @user2.aspects.first
 
     @contact = @user.contact_for(@user2.person)
     @user.getting_started = false
@@ -32,7 +32,9 @@ describe AspectsController do
   end
 
   describe "custom logging on error" do
-    class FakeError < RuntimeError; attr_accessor :original_exception; end
+    class FakeError < RuntimeError;
+      attr_accessor :original_exception;
+    end
     before do
       @action = :index
       @desired_error_message = "I love errors"
@@ -52,11 +54,42 @@ describe AspectsController do
     it_should_behave_like "it overrides the logs on redirect"
   end
 
+  def set_up_friends
+    local_luke = Factory(:user_with_aspect, :username => "luke")
+    local_leia = Factory(:user_with_aspect, :username => "leia")
+    remote_raphael = Factory(:person, :diaspora_handle => "raphael@remote.net")
+    connect_users_with_aspects(local_luke, local_leia)
+    local_leia.activate_contact(remote_raphael, local_leia.aspects.first)
+    local_luke.activate_contact(remote_raphael, local_luke.aspects.first)
+    [local_luke, local_leia, remote_raphael]
+  end
+
   describe "#index" do
     it "assigns @contacts to all the user's contacts" do
       get :index
-      assigns[:contacts].map{|c| c.id}.should == @user.contacts.map{|c| c.id}
+      assigns[:contacts].map { |c| c.id }.should == @user.contacts.map { |c| c.id }
     end
+
+    it "survives the deletion of a person object" do
+      luke, leia, raphael = set_up_friends
+      sign_out @user
+      sign_in luke
+
+      post = luke.post(:status_message, :message => "hi", :aspect => luke.aspects.first)
+
+      Comment.create!(:person_id => leia.person.id, :text => "cats", :post => post)
+      Comment.create!(:person_id => raphael.id, :text => "dogs!", :post => post)
+
+      get :index
+      response.should be_success
+      puts response.body
+
+      raphael.delete
+
+      get :index
+      response.should be_success
+    end
+
     it "generates a jasmine fixture" do
       get :index
       save_fixture(html_for("body"), "aspects_index")
@@ -74,7 +107,7 @@ describe AspectsController do
           @users << user
           aspect = user.aspects.create(:name => 'people')
           connect_users(@user, @aspect0, user, aspect)
-          post =  @user.post(:status_message, :message => "hello#{n}", :to => eval("@aspect#{(n%2)}.id"))
+          post = @user.post(:status_message, :message => "hello#{n}", :to => eval("@aspect#{(n%2)}.id"))
           @posts << post
         end
       end
@@ -106,7 +139,7 @@ describe AspectsController do
           @users << user
           aspect = user.aspects.create(:name => 'people')
           connect_users(@user, @aspect0, user, aspect)
-          post =  @user.post(:status_message, :message => "hello#{n}", :to => @aspect1.id)
+          post = @user.post(:status_message, :message => "hello#{n}", :to => @aspect1.id)
           @posts << post
           8.times do |n|
             user.comment "yo#{post.message}", :on => post
@@ -115,7 +148,7 @@ describe AspectsController do
       end
 
       it 'takes time' do
-        Benchmark.realtime{
+        Benchmark.realtime {
           get :index
         }.should < 1.5
       end
@@ -164,17 +197,17 @@ describe AspectsController do
       response.should be_success
     end
     it "performs reasonably" do
-        require 'benchmark'
-        8.times do |n|
-          aspect = @user.aspects.create(:name => "aspect#{n}")
-          8.times do |o|
-            person = Factory(:person)
-            @user.activate_contact(person, aspect)
-          end
+      require 'benchmark'
+      8.times do |n|
+        aspect = @user.aspects.create(:name => "aspect#{n}")
+        8.times do |o|
+          person = Factory(:person)
+          @user.activate_contact(person, aspect)
         end
-        Benchmark.realtime{
-          get :manage
-        }.should < 4.5
+      end
+      Benchmark.realtime {
+        get :manage
+      }.should < 4.5
     end
     it "assigns aspect to manage" do
       get :manage
@@ -196,7 +229,7 @@ describe AspectsController do
     end
     context "when the user has pending requests" do
       before do
-        requestor        = Factory.create(:user)
+        requestor = Factory.create(:user)
         requestor_aspect = requestor.aspects.create(:name => "Meh")
         requestor.send_contact_request_to(@user.person, requestor_aspect)
 
@@ -230,7 +263,7 @@ describe AspectsController do
         :person_id => @person.id,
         :from => @aspect0.id,
         :to =>
-        {:to => @aspect1.id}
+          {:to => @aspect1.id}
       }
     end
     it 'calls the move_contact_method' do
@@ -246,8 +279,8 @@ describe AspectsController do
       @aspect0 = @user.aspects.create(:name => "Bruisers")
     end
     it "doesn't overwrite random attributes" do
-      new_user         = Factory.create :user
-      params           = {"name" => "Bruisers"}
+      new_user = Factory.create :user
+      params = {"name" => "Bruisers"}
       params[:user_id] = new_user.id
       put('update', :id => @aspect0.id, "aspect" => params)
       Aspect.find(@aspect0.id).user_id.should == @user.id
@@ -262,16 +295,16 @@ describe AspectsController do
       end
       it 'deletes the request' do
         post 'add_to_aspect',
-          :format => 'js',
-          :person_id => @user3.person.id,
-          :aspect_id => @aspect1.id
+             :format => 'js',
+             :person_id => @user3.person.id,
+             :aspect_id => @aspect1.id
         Request.where(:sender_id => @user3.person.id, :recipient_id => @user.person.id).first.should be_nil
       end
       it 'does not leave the contact pending' do
         post 'add_to_aspect',
-          :format => 'js',
-          :person_id => @user3.person.id,
-          :aspect_id => @aspect1.id
+             :format => 'js',
+             :person_id => @user3.person.id,
+             :aspect_id => @aspect1.id
         @user.contact_for(@user3.person).should_not be_pending
       end
     end
@@ -282,24 +315,24 @@ describe AspectsController do
       it 'calls send_contact_request_to' do
         @user.should_receive(:send_contact_request_to).with(@person, @aspect1)
         post 'add_to_aspect',
-          :format => 'js',
-          :person_id => @person.id,
-          :aspect_id => @aspect1.id
+             :format => 'js',
+             :person_id => @person.id,
+             :aspect_id => @aspect1.id
       end
       it 'does not call add_contact_to_aspect' do
         @user.should_not_receive(:add_contact_to_aspect)
         post 'add_to_aspect',
-          :format => 'js',
-          :person_id => @person.id,
-          :aspect_id => @aspect1.id
+             :format => 'js',
+             :person_id => @person.id,
+             :aspect_id => @aspect1.id
       end
     end
     it 'adds the users to the aspect' do
       @user.should_receive(:add_contact_to_aspect)
       post 'add_to_aspect',
-        :format => 'js',
-        :person_id => @user2.person.id,
-        :aspect_id => @aspect1.id
+           :format => 'js',
+           :person_id => @user2.person.id,
+           :aspect_id => @aspect1.id
       response.should be_success
     end
   end
@@ -315,9 +348,9 @@ describe AspectsController do
     it 'removes contacts from an aspect' do
       @user.add_contact_to_aspect(@contact, @aspect1)
       post 'remove_from_aspect',
-        :format => 'js',
-        :person_id => @user2.person.id,
-        :aspect_id => @aspect0.id
+           :format => 'js',
+           :person_id => @user2.person.id,
+           :aspect_id => @aspect0.id
       response.should be_success
       @aspect0.reload
       @aspect0.contacts.include?(@contact).should be false

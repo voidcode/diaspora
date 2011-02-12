@@ -21,7 +21,8 @@ class Comment < ActiveRecord::Base
   xml_attr :post_creator_signature
 
   belongs_to :post
-  always_belongs_to_person
+#  always_belongs_to_person
+  belongs_to :person
 
   validates_presence_of :text, :post
   validates_length_of :text, :maximum => 500
