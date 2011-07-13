@@ -2,18 +2,32 @@
 -#   licensed under the Affero General Public License version 3 or later.  See
 -#   the COPYRIGHT file.
 
+- content_for :head do
+  = include_javascripts :profile
+  = render :partial => 'js/tag_autocomplete.js.haml'
 
-%br
-%br
-%br
-%br
-%br
 %h3{:style => 'text-align: center;'}
-  = t('.find_your_friends_on_diaspora')
-  %br
-  %br
-  %br
-  = link_to image_tag('services/facebook_sign_in.png', :id => 'getting_started_logo', :width => 154, :height => 22), '/auth/facebook'
+  /  = t('.hashtags')
+  Diaspora uses
+  = link_to('#hashtags', tag_path('hashtags'), :class => 'tag')
+  to help you find interesting posts and people.
+A post with a word that starts with one of these
+= link_to('#hashtags', tag_path('hashtags'), :class => 'tag')
+will show up on that hashtag's page, and the post will link there.
+%br
+If you've tagged your Diaspora profile, that will also show up on the tag's page.
+%br
+%br
+%br
+= form_tag profile_path, :method => :put, :id => 'update_profile_form' do
+  %h4
+    Tell us a few of your interests!
+    = text_field_tag 'profile[tag_string]', ""
 
-.submit_block
-  = link_to "#{t('.skip')} →", getting_started_path(:step => @step+1), :class => 'button'
+  %br
+  %br
+  %br
+  %br
+  %br
+  .submit_block
+    = submit_tag "#{t('users.getting_started.save_and_continue')} →"

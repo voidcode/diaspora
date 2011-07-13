@@ -29,9 +29,9 @@
   .floating{:style=>"min-height:300px;"}
     = render "users/getting_started/step_#{@step}", :current_user => current_user
 
-    - if @step > 1
+    - if @step > 2
       = link_to t('back'), getting_started_path(:step => @step-1), :class => "button", :id => "previous_step"
 
-- if @user.getting_started
-  .bottom_notification
-    = link_to "#{t('.skip')} →", getting_started_completed_path
+/- if @user.getting_started
+/  .bottom_notification
+/    = link_to "#{t('.skip')} →", getting_started_completed_path

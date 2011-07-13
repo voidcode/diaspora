@@ -93,27 +93,25 @@ class UsersController < ApplicationController
     @step = ((params[:step].to_i>0)&&(params[:step].to_i<4)) ? params[:step].to_i : 1
     @step ||= 1
 
-    if @step == 2 && SERVICES['facebook']['app_id'] == ""
-      @step = 3
+    if @step == 3 && SERVICES['facebook']['app_id'] == ""
+      @step = 4
     end
 
-    if @step == 3
+    if @step == 4
       @friends = service ? service.finder(:local => true) : []
       @friends ||= []
     end
 
-    if @step == 3 && @friends.length == 0
-      @user.update_attributes(:getting_started => false)
+    if @step == 4 && @friends.length == 0
       flash[:notice] = I18n.t('users.getting_started.could_not_find_anyone')
-      redirect_to root_path
+      getting_started_completed
     else
       render "users/getting_started"
     end
   end
 
   def getting_started_completed
-    user = current_user
-    user.update_attributes(:getting_started => false)
+    current_user.update_attributes(:getting_started => false)
     redirect_to root_path
   end
 

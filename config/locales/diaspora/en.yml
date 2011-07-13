@@ -542,7 +542,7 @@ en:
       your_location: "Your location"
       your_photo: "Your photo"
       update_profile: "Update Profile"
-      allow_search: "Allow for people to search for you within Diaspora"
+      allow_search: "Allow people to search for you within Diaspora"
       edit_profile: "Edit profile"
     update:
       updated: "Profile updated"
