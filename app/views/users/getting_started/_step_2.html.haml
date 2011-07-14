@@ -5,6 +5,12 @@
 - content_for :head do
   = include_javascripts :profile
   = render :partial => 'js/tag_autocomplete.js.haml'
+  :javascript
+    $(document).ready(function(){
+      $('#tags').focus();
+    });
+    
+    
 
 %h4{:style => 'text-align: center;'}
   Diaspora uses
@@ -21,7 +27,8 @@ If you've tagged your Diaspora profile, you will also show up on the tag's page.
 = form_tag profile_path, :method => :put, :id => 'update_profile_form' do
   %h4
     Tell us a few of your interests!
-    = text_field_tag 'profile[tag_string]', ""
+    = text_field_tag 'profile[tag_string]', nil, :title => t('profiles.edit.your_tags_placeholder')
+    
     = hidden_field_tag :getting_started, step
   %br
   %br

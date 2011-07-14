@@ -3,8 +3,8 @@
 -#   the COPYRIGHT file.
 
 - content_for :head do
-  = include_javascripts :profile
   = render :partial => 'js/tag_autocomplete.js.haml'
+  = include_javascripts :profile
 
 %h3
   = t('profiles.edit.your_public_profile')
@@ -19,7 +19,7 @@
 - unless aspect == :getting_started
   %h4
     = t('profiles.edit.your_tags')
-    = text_field_tag 'profile[tag_string]', ""
+    = text_field_tag 'profile[tag_string]', nil, :title => t('profiles.edit.your_tags_placeholder')
 %h4
   = t('profiles.edit.your_photo')
   = render 'photos/new_profile_photo', :aspect => aspect, :person => person

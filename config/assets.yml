@@ -79,6 +79,7 @@ javascripts:
     - public/javascripts/inbox.js
   profile:
     - public/javascripts/vendor/jquery.autoSuggest.custom.js
+    - public/javascripts/tagAutocomplete.js
 
 stylesheets:
   default:

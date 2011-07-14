@@ -28,7 +28,7 @@ en:
           unknown: "Unknown video type"
       search_for: "Search for {{name}}"
       publisher:
-        at_least_one_aspect: "You must publish to at least one aspect"
+        at_least_one_aspect: "You must publish toggle at least one aspect"
       infinite_scroll:
         no_more: "No more posts."
       web_sockets:
@@ -47,3 +47,5 @@ en:
       comments:
         show: "show all comments"
         hide: "hide comments"
+      tag_autocompleter:
+        no_more_tags: "You can only have five tags"
