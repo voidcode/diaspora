@@ -27,7 +27,7 @@
   %br
   %br
   .floating{:style=>"min-height:300px;"}
-    = render "users/getting_started/step_#{step}", :current_user => current_user
+    = render "users/getting_started/step_#{step}"
 
     - if previous_step 
       = link_to t('back'), getting_started_path(:step => previous_step), :class => "button", :id => "previous_step"

@@ -138,4 +138,79 @@ describe UsersController do
       alice.reload.access_locked?.should be_true
     end
   end
+
+  context 'helper methods' do
+
+    describe '#aspect' do
+      it 'is set to :getting_started when you are in getting started' do
+        get :getting_started
+        @controller.aspect.should be :getting_started
+      end
+
+      it 'is set to :user_edit for everything else' do
+        get :edit
+        @controller.aspect.should be :user_edit
+      end
+    end
+
+    describe '#step' do
+      it 'parses the step as a string from the params' do
+        get :getting_started, :step => '1'
+        @controller.step.should be 1
+      end
+
+      it 'skips step 3 if facebook is not configured' do
+        get :getting_started, :step => 3
+        @controller.step.should be 4
+      end
+    end
+    
+    describe '#previous_step' do
+      it 'should be the step before if the step is greater than 1' do
+        get :getting_started, :step => 2
+        @controller.previous_step.should be 1
+      end
+
+      it 'should be nil if step is less than 2' do
+        get :getting_started, :step => 1
+        @controller.previous_step.should be nil
+      end
+    end
+
+    describe '#user' do
+      it 'should be the current user' do
+        get :getting_started, :step => 1
+        @controller.user.id.should be @user.id
+      end
+    end
+
+    describe '#person' do
+      it 'should be the person of #user' do
+        get :getting_started, :step => 1
+        @controller.person.id.should be @user.person.id
+      end
+    end
+
+    describe '#profile' do
+      it 'should be the profile of #person' do
+        get :getting_started, :step => 1
+        @controller.profile.id.should be @user.person.profile.id
+      end
+    end
+
+    describe '#services' do
+      it 'should be the services of #user' do
+        get :getting_started, :step => 1
+        @controller.services.should =~ @user.services
+      end
+    end
+
+
+    describe '#friends' do
+      it 'should be empty on all steps but 4' do
+        get :getting_started, :step => 1
+        @controller.friends.should == []
+      end
+    end
+  end
 end

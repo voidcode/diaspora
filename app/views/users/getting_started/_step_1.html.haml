@@ -5,14 +5,14 @@
 
 = form_tag profile_path, :method => :put, :multipart => true, :id => 'update_profile_form' do
   %div{:style => "width:360px"}
-    = render 'profiles/edit_public', :profile => @profile, :aspect => @aspect, :person => @person
-    = hidden_field_tag :getting_started, @step
+    = render 'profiles/edit_public' 
+    = hidden_field_tag :getting_started, step
 
     %h4
       = t('search')
       %p{:class=>"checkbox_select"}
         = label_tag 'profile[searchable]', t('profiles.edit.allow_search')
-        = check_box_tag 'profile[searchable]', true, @profile.searchable
+        = check_box_tag 'profile[searchable]', true, profile.searchable
 
     %br
     %br

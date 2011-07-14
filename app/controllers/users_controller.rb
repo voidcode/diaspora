@@ -12,10 +12,8 @@ class UsersController < ApplicationController
   respond_to :html
 
   def edit
-    @aspect = :user_edit
-    @user   = current_user
     @email_prefs = Hash.new(true)
-    @user.user_preferences.each do |pref|
+    user.user_preferences.each do |pref|
       @email_prefs[pref.email_type] = false
     end
   end
@@ -23,7 +21,6 @@ class UsersController < ApplicationController
   def update
     password_changed = false
     if u = params[:user]
-      @user = current_user
 
       u.delete(:password) if u[:password].blank?
       u.delete(:password_confirmation) if u[:password].blank? and u[:password_confirmation].blank?
@@ -31,19 +28,19 @@ class UsersController < ApplicationController
 
       # change email notifications
       if u[:email_preferences]
-        @user.update_user_preferences(u[:email_preferences])
+        user.update_user_preferences(u[:email_preferences])
         flash[:notice] = I18n.t 'users.update.email_notifications_changed'
       # change password
       elsif u[:current_password] && u[:password] && u[:password_confirmation]
-        if @user.update_with_password(u)
+        if user.update_with_password(u)
           password_changed = true
           flash[:notice] = I18n.t 'users.update.password_changed'
         else
           flash[:error] = I18n.t 'users.update.password_not_changed'
         end
       elsif u[:language]
-        if @user.update_attributes(:language => u[:language])
-          I18n.locale = @user.language
+        if user.update_attributes(:language => u[:language])
+          I18n.locale = user.language
           flash[:notice] = I18n.t 'users.update.language_changed'
         else
           flash[:error] = I18n.t 'users.update.language_not_changed'
@@ -83,19 +80,7 @@ class UsersController < ApplicationController
   end
 
   def getting_started
-    @aspect   = :getting_started
-    @user     = current_user
-    @person   = @user.person
-    @profile  = @user.profile
-    @services = @user.services
-
-    if step == 4
-      facebook = @user.services.where(:type => "Services::Facebook").first
-      @friends = facebook ? facebook.finder(:local => true) : []
-      @friends ||= []
-    end
-
-    if step == 4 && @friends.length == 0
+    if step == 4 && friends.empty?
       flash[:notice] = I18n.t('users.getting_started.could_not_find_anyone')
       getting_started_completed
     else
@@ -124,15 +109,40 @@ class UsersController < ApplicationController
   end
 
   def step
-    @step ||= params[:step].to_i if params[:step].to_i === [1...4]
+    @step ||= params[:step].to_i if((1..4) === params[:step].to_i)
     @step ||= 1
     @step +=1 if(@step == 3 && !AppConfig.configured_services.include?('facebook'))
     @step
   end
 
   def previous_step
-    step > 2 ? step-1 : nil
+    step > 1 ? step-1 : nil
   end
 
-  helper_method :previous_step, :aspect, :step
+  def user
+    @user ||= current_user
+  end
+  
+  def person
+    @person ||= user.person
+  end
+
+  def profile
+    @profile ||= person.profile
+  end
+
+  def services
+    @services ||= user.services
+  end
+
+  def friends
+    if step == 4
+      facebook = user.services.where(:type => "Services::Facebook").first
+      @friends = facebook ? facebook.finder(:local => true) : []
+    end
+      @friends ||= []
+      @friends
+  end
+
+  helper_method :previous_step, :aspect, :step, :user, :person, :profile, :services
 end

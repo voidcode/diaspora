@@ -11,7 +11,7 @@
   %br
 
 #people_stream.stream
-  - for friend in @friends
+  - for friend in friends
     = render :partial => 'people/person', :locals => {:person => friend.person, :contact => friend.contact}
 
 %br
