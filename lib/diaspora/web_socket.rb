@@ -14,6 +14,7 @@ module Diaspora
       redis.llen :websocket
     end
     def self.queue_to_user(uid, data)
+      puts "Queuing #{data} to #{uid}"
       redis.lpush(:websocket, {:uid => uid, :data => data}.to_json)
     end
 
@@ -22,10 +23,12 @@ module Diaspora
     end
 
     def self.next
+      puts "Grabbing from the queue"
       redis.rpop(:websocket)
     end
 
     def self.push_to_user(uid, data)
+      puts "Pushing #{data} to #{uid}"
       Rails.logger.debug "event=socket-push uid=#{uid}"
       @channels[uid][0].push(data) if @channels[uid]
     end

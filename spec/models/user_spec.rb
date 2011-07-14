@@ -281,14 +281,6 @@ describe User do
       }
     end
 
-    it 'dispatches the profile when tags are set' do
-      @params = {:tags => '#what #hey'}
-      mailman = Postzord::Dispatch.new(alice, Profile.new)
-      Postzord::Dispatch.should_receive(:new).and_return(mailman)
-      mailman.should_receive(:deliver_to_local)
-      alice.update_profile(@params).should be_true
-    end
-
     it 'sends a profile to their contacts' do
       mailman = Postzord::Dispatch.new(alice, Profile.new)
       Postzord::Dispatch.should_receive(:new).and_return(mailman)
@@ -308,6 +300,30 @@ describe User do
       alice.reload.profile.image_url.should == "http://clown.com"
     end
 
+    context 'updating tags' do
+      before do
+        @params.merge!(:tag_string => "#big #rafi")
+      end
+      it 'dispatches the profile when only tags are set' do
+        params = {:tag_string => '#what #hey'}
+        mailman = Postzord::Dispatch.new(alice, Profile.new)
+        Postzord::Dispatch.should_receive(:new).and_return(mailman)
+        mailman.should_receive(:deliver_to_local)
+        alice.update_profile(params).should be_true
+      end
+      it 'follows tags if no tag was set' do
+        expect{
+          alice.update_profile(@params).should be_true
+        }.to change{ TagFollowing.count }.by(2)
+      end 
+      it 'does not follow tags if tags were previously set' do
+        alice.update_profile(@params)
+        expect{
+          alice.update_profile(:tags => "#big #rafi #style")
+        }.to change{ TagFollowing.count }.by(0)
+        
+      end
+    end
     context 'passing in a photo' do
       before do
         fixture_filename  = 'button.png'

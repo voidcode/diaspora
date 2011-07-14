@@ -86,6 +86,7 @@ class Postzord::Dispatch
     Resque.enqueue(Job::NotifyLocalUsers, users.map{|u| u.id}, @object.class.to_s, @object.id, @object.author.id)
   end
   def socket_to_users(users)
+    puts "In socket_to_users"
     return unless @object.respond_to?(:socket_to_user)
     users.each do |user|
       @object.socket_to_user(user)

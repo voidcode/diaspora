@@ -240,6 +240,11 @@ class User < ActiveRecord::Base
     end
     if self.person.profile.update_attributes(params)
       Postzord::Dispatch.new(self, profile).post
+      if self.tag_followings.count == 0
+        self.person.profile.reload.tags(true).each do |tag|
+          self.tag_followings.create(:tag_id => tag.id)
+        end
+      end
       true
     else
       false
