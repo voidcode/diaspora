@@ -66,7 +66,7 @@ Diaspora::Application.routes.draw do
 
   controller :users do
     get 'public/:username'          => :public,          :as => 'users_public'
-    match 'getting_started'         => :getting_started, :as => 'getting_started'
+    match 'getting_started/(:step)'         => :getting_started, :as => 'getting_started'
     get 'getting_started_completed' => :getting_started_completed
   end
 

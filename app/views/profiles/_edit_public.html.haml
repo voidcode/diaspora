@@ -16,9 +16,10 @@
   = text_field_tag 'profile[first_name]', profile.first_name, :placeholder => t('profiles.edit.first_name')
   = text_field_tag 'profile[last_name]', profile.last_name, :placeholder => t('profiles.edit.last_name')
 
-%h4
-  = t('profiles.edit.your_tags')
-  = text_field_tag 'profile[tag_string]', ""
+- unless aspect == :getting_started
+  %h4
+    = t('profiles.edit.your_tags')
+    = text_field_tag 'profile[tag_string]', ""
 %h4
   = t('profiles.edit.your_photo')
   = render 'photos/new_profile_photo', :aspect => aspect, :person => person
