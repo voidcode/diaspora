@@ -23,14 +23,14 @@
     }
 
 .span-15.prepend-4.last{:style => 'position:relative;'}
-  = image_tag 'logo_caps.png', :id => 'getting_started_logo', :width => 143, :height => 21, :class => ('start' if @step == 1)
+  = image_tag 'logo_caps.png', :id => 'getting_started_logo', :width => 143, :height => 21, :class => ('start' if step == 1)
   %br
   %br
   .floating{:style=>"min-height:300px;"}
-    = render "users/getting_started/step_#{@step}", :current_user => current_user
+    = render "users/getting_started/step_#{step}", :current_user => current_user
 
-    - if @step > 2
-      = link_to t('back'), getting_started_path(:step => @step-1), :class => "button", :id => "previous_step"
+    - if previous_step 
+      = link_to t('back'), getting_started_path(:step => previous_step), :class => "button", :id => "previous_step"
 
 /- if @user.getting_started
 /  .bottom_notification

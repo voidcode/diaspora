@@ -88,21 +88,14 @@ class UsersController < ApplicationController
     @person   = @user.person
     @profile  = @user.profile
     @services = @user.services
-    service = current_user.services.where(:type => "Services::Facebook").first
 
-    @step = ((params[:step].to_i>0)&&(params[:step].to_i<4)) ? params[:step].to_i : 1
-    @step ||= 1
-
-    if @step == 3 && SERVICES['facebook']['app_id'] == ""
-      @step = 4
-    end
-
-    if @step == 4
-      @friends = service ? service.finder(:local => true) : []
+    if step == 4
+      facebook = @user.services.where(:type => "Services::Facebook").first
+      @friends = facebook ? facebook.finder(:local => true) : []
       @friends ||= []
     end
 
-    if @step == 4 && @friends.length == 0
+    if step == 4 && @friends.length == 0
       flash[:notice] = I18n.t('users.getting_started.could_not_find_anyone')
       getting_started_completed
     else
@@ -124,4 +117,22 @@ class UsersController < ApplicationController
     tar_path = PhotoMover::move_photos(current_user)
     send_data( File.open(tar_path).read, :filename => "#{current_user.id}.tar" )
   end
+
+  #helper methods
+  def aspect
+    request.path.include?('getting_started') ? :getting_started : :user_edit
+  end
+
+  def step
+    @step ||= params[:step].to_i if params[:step].to_i === [1...4]
+    @step ||= 1
+    @step +=1 if(@step == 3 && !AppConfig.configured_services.include?('facebook'))
+    @step
+  end
+
+  def previous_step
+    step > 2 ? step-1 : nil
+  end
+
+  helper_method :previous_step, :aspect, :step
 end
