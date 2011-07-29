@@ -367,7 +367,7 @@ var Publisher = {
     }
   },
   onSuccess: function(data, json, xhr){
-    var isPostVisible = false;
+    var isPostVisible = AspectFilters.isHomeSelected();
     var postedTo = Publisher.selectedAspectIds();
     $.each(AspectFilters.selectedGUIDS, function(index, value){
       if(postedTo.indexOf(parseInt(value))>-1)
