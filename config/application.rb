@@ -60,6 +60,7 @@ module Diaspora
     config.filter_parameters += [:message]
     config.filter_parameters += [:text]
     config.filter_parameters += [:bio]
+    config.middleware.use ::Rack::PerftoolsProfiler, :default_printer => 'gif', :bundler => true
 
   end
 end

@@ -85,8 +85,8 @@ group :development do
 end
 
 group :test, :development do
-  #gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i  
-  #gem 'guard-rspec' 
+  #gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
+  #gem 'guard-rspec'
    gem 'factory_girl_rails', :require => false
   unless ENV["TRAVIS"]
     gem 'ruby-debug-base19', '0.11.23' if RUBY_VERSION.include? '1.9.1'
@@ -118,3 +118,5 @@ group :test do
   gem 'diaspora-client', :git => 'git://github.com/diaspora/diaspora-client.git'
 
 end
+
+gem 'rack-perftools_profiler', :require => 'rack/perftools_profiler'
