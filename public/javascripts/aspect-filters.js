@@ -5,6 +5,7 @@
 
 var AspectFilters = {
   selectedGUIDS: [],
+  isHomeSelected: function() { return $("#aspect_nav li.all_aspects").hasClass('active'); },
   requests: 0,
   initialize: function(){
     AspectFilters.initializeSelectedGUIDS();
