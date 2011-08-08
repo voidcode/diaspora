@@ -2,8 +2,8 @@
 -#   licensed under the Affero General Public License version 3 or later.  See
 -#   the COPYRIGHT file.
 
-
-- if photos.size > 0
+- if post.photos_count > 0
+  - photos = post.photos
   .photo_attachments
     = link_to (image_tag photos.first.url(:scaled_full), :class => "stream-photo", 'data-small-photo' => photos.first.url(:thumb_medium), 'data-full-photo' => photos.first.url), photo_path(photos.first), :class => "stream-photo-link big_stream_photo"
     - if photos.size > 1

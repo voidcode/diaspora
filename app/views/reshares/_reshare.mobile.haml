@@ -8,12 +8,12 @@
     .content
       .from
         = person_link(post.author, :class => "hovercardable")
-             
+
 
       - if post.activity_streams?
         = link_to image_tag(post.image_url, 'data-small-photo' => post.image_url, 'data-full-photo' => post.image_url, :class => 'stream-photo'), post.object_url, :class => "stream-photo-link"
       - else
-        = render 'status_messages/status_message', :post => post, :photos => post.photos
+        = render 'status_messages/status_message', :post => post
       - if defined?(current_user) && current_user && (post.author_id != current_user.person.id) && (post.public?) && !reshare?(post)
         .reshare_action
           = reshare_link(post)

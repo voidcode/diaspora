@@ -13,7 +13,7 @@ class Photo < Post
   xml_attr :text
   xml_attr :status_message_guid
 
-  belongs_to :status_message, :foreign_key => :status_message_guid, :primary_key => :guid
+  belongs_to :status_message, :foreign_key => :status_message_guid, :primary_key => :guid, :counter_cache => true
 
   attr_accessible :text, :pending
   validate :ownership_of_status_message

@@ -23,7 +23,6 @@ module LikesHelper
       else
         link_to t('shared.stream_element.like'), post_likes_path(target, :positive => 'true'), :method => :post, :class => 'like', :remote => true
       end
-
     end
   end
 end
