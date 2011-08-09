@@ -3,6 +3,17 @@
 #   the COPYRIGHT file.
 
 module AspectGlobalHelper
+  def stream_title
+    if all_aspects_selected?
+      t('.stream')
+    elsif @aspect.is_a?(Symbol)
+      t(".#{@aspect}")
+    else
+       @aspects.to_sentence
+    end
+  end
+
+
   def aspects_with_post(aspects, post)
     aspects.select do |aspect|
       AspectVisibility.exists?(:aspect_id => aspect.id, :post_id => post.id)

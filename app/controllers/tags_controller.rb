@@ -13,6 +13,7 @@ class TagsController < ApplicationController
   respond_to :json, :only => [:index]
 
   def index
+    #tag search
     if params[:q] && params[:q].length > 1
       params[:q].gsub!("#", "")
       params[:limit] = !params[:limit].blank? ? params[:limit].to_i : 10
@@ -31,10 +32,17 @@ class TagsController < ApplicationController
           render(:json => @array.to_json, :status => 200)
         }
       end
+      #normal tag index
     else
-      respond_to do |format|
+      @aspect_ids = current_user.aspect_ids
+      @aspect = current_user.followed_tags.join(', '){|tag| tag.name}.to_sym
+      @posts = cuentStatusMessage.visible_by(current_user).tagged_with([@aspect], :any => true)
+
+      @selected_people = @posts.map{|p| p.author}.uniq
+      @selected_people_count = @selected_people.count
+            respond_to do |format|
         format.json{ render :nothing => true, :status => 422 }
-        format.html{ redirect_to tag_path('partytimeexcellent') }
+        format.html{ render 'aspects/index'}
       end
     end
   end

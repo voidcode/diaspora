@@ -29,6 +29,9 @@ class Post < ActiveRecord::Base
 
   belongs_to :author, :class_name => 'Person'
 
+  scope :visible_by, lambda {|user| joins(:aspect_visibilities => {:user_id => user.id}) }
+
+
   def diaspora_handle
     read_attribute(:diaspora_handle) || self.author.diaspora_handle
   end
