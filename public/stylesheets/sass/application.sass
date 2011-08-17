@@ -2844,7 +2844,6 @@ ul.left_nav
 
   a.aspect_selector,
   a.home_selector,
-  a.tag_selector,
   a.element_selector,
   .root_element
     :display block
@@ -2856,7 +2855,7 @@ ul.left_nav
 
   a.aspect_selector,
   a.home_selector,
-  a.tag_selector,
+  li.unfollow,
   a.element_selector
     &:hover
       @include border-radius(2px)
@@ -2865,6 +2864,15 @@ ul.left_nav
         :color lighten($blue,45%)
       :text
         :decoration none
+
+  a.tag_selector
+    :text
+      :decoration none
+    :overflow hidden
+    :width 100px
+    :padding 3px 7px
+      :left 15px
+    :display block
 
   li.active
     > a:not(.sub_selected)
@@ -2914,8 +2922,7 @@ ul.left_nav
       :width 155px
 
     a.aspect_selector,
-    .new_aspect,
-    a.tag_selector
+    .new_aspect
       :padding
         :left 15px
       :width 182px
@@ -2935,8 +2942,7 @@ ul.left_nav
       :width 140px
 
       a.aspect_selector,
-      .new_aspect,
-      a.tag_selector
+      .new_aspect
         :width 140px
 
       li:hover,
