@@ -2,8 +2,7 @@
   .right
 
     - if friend.already_invited?
-      .button.resend
-        = link_to t('.resend'), service_inviter_path(:uid => friend.uid, :provider => 'facebook', :invitation_id => friend.invitation_id, :format => :json)
+      = link_to t('.resend'), service_inviter_path(:uid => friend.uid, :provider => 'facebook', :invitation_id => friend.invitation_id), :class => 'button resend'
     - elsif friend.on_diaspora?
       = render 'aspect_memberships/aspect_dropdown', :contact => contact_proxy(friend), :person => friend.person, :hang => 'left'
     - else
