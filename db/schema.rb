@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110818212541) do
+ActiveRecord::Schema.define(:version => 20110826233833) do
 
   create_table "aspect_memberships", :force => true do |t|
     t.integer  "aspect_id",  :null => false
@@ -47,16 +47,18 @@ ActiveRecord::Schema.define(:version => 20110818212541) do
   add_index "aspects", ["user_id"], :name => "index_aspects_on_user_id"
 
   create_table "comments", :force => true do |t|
-    t.text     "text",                                   :null => false
-    t.integer  "post_id",                                :null => false
-    t.integer  "author_id",                              :null => false
-    t.string   "guid",                                   :null => false
+    t.text     "text",                                        :null => false
+    t.integer  "post_id",                                     :null => false
+    t.integer  "author_id",                                   :null => false
+    t.string   "guid",                                        :null => false
     t.text     "author_signature"
     t.text     "parent_author_signature"
     t.text     "youtube_titles"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "likes_count",             :default => 0, :null => false
+    t.integer  "likes_count",                  :default => 0, :null => false
+    t.string   "author_signature_algo"
+    t.string   "parent_author_signature_algo"
   end
 
   add_index "comments", ["author_id"], :name => "index_comments_on_person_id"
@@ -114,7 +116,7 @@ ActiveRecord::Schema.define(:version => 20110818212541) do
   add_index "invitations", ["sender_id"], :name => "index_invitations_on_sender_id"
 
   create_table "likes", :force => true do |t|
-    t.boolean  "positive",                              :default => true
+    t.boolean  "positive",                                   :default => true
     t.integer  "target_id"
     t.integer  "author_id"
     t.string   "guid"
@@ -122,7 +124,9 @@ ActiveRecord::Schema.define(:version => 20110818212541) do
     t.text     "parent_author_signature"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "target_type",             :limit => 60,                   :null => false
+    t.string   "target_type",                  :limit => 60,                   :null => false
+    t.string   "author_signature_algo"
+    t.string   "parent_author_signature_algo"
   end
 
   add_index "likes", ["author_id"], :name => "likes_author_id_fk"
@@ -140,14 +144,16 @@ ActiveRecord::Schema.define(:version => 20110818212541) do
   add_index "mentions", ["post_id"], :name => "index_mentions_on_post_id"
 
   create_table "messages", :force => true do |t|
-    t.integer  "conversation_id",         :null => false
-    t.integer  "author_id",               :null => false
-    t.string   "guid",                    :null => false
-    t.text     "text",                    :null => false
+    t.integer  "conversation_id",              :null => false
+    t.integer  "author_id",                    :null => false
+    t.string   "guid",                         :null => false
+    t.text     "text",                         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "author_signature"
     t.text     "parent_author_signature"
+    t.string   "author_signature_algo"
+    t.string   "parent_author_signature_algo"
   end
 
   add_index "messages", ["author_id"], :name => "index_messages_on_author_id"
